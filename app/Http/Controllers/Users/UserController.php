@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 
 use App\Models\User;
+use App\Http\Resources\UserCollection;
 
 class UserController extends ApiController
 {
@@ -16,9 +17,9 @@ class UserController extends ApiController
      */
     public function index(Request $request)
     {
-        //$user = User::orderByDesc('created_at')->get();
+        //$user = User::orderByDesc('created_at')->paginate( (int)$request->per_page );
 
-        //return UserResource::collection($user);
+        //return UserCollection::collection($user);
 
         //$query = User::orderByDesc('created_at');
         $query = User::select();
@@ -28,6 +29,10 @@ class UserController extends ApiController
         }
 
         $user = $query->paginate( (int)$request->per_page )->toArray();
+
+
+        $data = UserCollection::collection($user['data']);
+        $user['data'] = $data;
 
         return $this->successResponsePaginate($user);
     }
