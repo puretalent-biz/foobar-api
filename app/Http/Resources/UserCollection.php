@@ -21,7 +21,7 @@ class UserCollection extends JsonResource
 
         return [
             'id' => $this['id'],
-            'name' => 'Super '.$this['name'],
+            'name' => $this['name'],
             'email' => $this['email'],
             'created_at' => $created_at_date_1
         ];

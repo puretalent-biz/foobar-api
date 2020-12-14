@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::factory(100)->create();
+        // php artisan db:seed
+        // php artisan migrate:refresh --seed
+
+        \App\Models\User::factory(150)->create();
     }
 }

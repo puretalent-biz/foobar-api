@@ -17,16 +17,34 @@ class UserController extends ApiController
      */
     public function index(Request $request)
     {
-        //$user = User::orderByDesc('created_at')->paginate( (int)$request->per_page );
-
-        //return UserCollection::collection($user);
-
-        //$query = User::orderByDesc('created_at');
         $query = User::select();
         
         if ( isset($request->sort_field, $request->sort_direction) ) {
             $query->orderBy($request->sort_field, $request->sort_direction);
         }
+
+        if( $request->has('search') ) 
+        {
+            $query->where('firstname', 'like', "%{$request->search}%")
+            ->orWhere('lastname', 'like', "%{$request->search}%")
+            ->orWhere('name', 'like', "%{$request->search}%")
+            ->orWhere('email', 'like', "%{$request->search}%");
+
+            // whereRaw('lower(meta->"$.description") like lower(?)', ["%{$foo}%"]);
+        }
+
+        if( $request->has('date_start') && $request->has('date_end') ) 
+        {
+            $query->whereBetween('created_at', [
+                $request->date_start." 00:00:00", 
+                $request->date_end." 23:59:59"
+            ]);
+        } 
+        else if( $request->has('date_start') )
+        {
+
+        }
+
 
         $user = $query->paginate( (int)$request->per_page )->toArray();
 
